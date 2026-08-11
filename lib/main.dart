@@ -22,7 +22,7 @@ class LeafApp extends StatelessWidget {
           seedColor: const Color(0xFF667A55),
           brightness: Brightness.light,
         ),
-        scaffoldBackgroundColor: const Color(0xFFF7F4EC),
+        scaffoldBackgroundColor: const Color(0xFFECE7D9),
       ),
       home: const LeafHomePage(),
     );
@@ -45,12 +45,6 @@ class _LeafHomePageState extends State<LeafHomePage> {
 
   Map<String, int> readingHistory = {};
 
-  // Her okuma kaydı:
-  // {
-  //   "date": "2026-08-12",
-  //   "book": "Muhteşem Gatsby",
-  //   "pages": 25
-  // }
   List<Map<String, dynamic>> readingRecords = [];
 
   @override
@@ -60,7 +54,7 @@ class _LeafHomePageState extends State<LeafHomePage> {
   }
 
   // ============================================================
-  // VERİLERİ YÜKLE
+  // VERİLER
   // ============================================================
 
   Future<void> loadData() async {
@@ -68,7 +62,8 @@ class _LeafHomePageState extends State<LeafHomePage> {
 
     final savedBooks = prefs.getString('leaf_books');
     final savedHistory = prefs.getString('leaf_history');
-    final savedRecords = prefs.getString('leaf_reading_records');
+    final savedRecords =
+        prefs.getString('leaf_reading_records');
 
     if (savedBooks != null) {
       final decodedBooks = jsonDecode(savedBooks);
@@ -96,9 +91,11 @@ class _LeafHomePageState extends State<LeafHomePage> {
     if (savedRecords != null) {
       final decodedRecords = jsonDecode(savedRecords);
 
-      readingRecords = List<Map<String, dynamic>>.from(
+      readingRecords =
+          List<Map<String, dynamic>>.from(
         decodedRecords.map(
-          (record) => Map<String, dynamic>.from(record),
+          (record) =>
+              Map<String, dynamic>.from(record),
         ),
       );
     }
@@ -107,10 +104,6 @@ class _LeafHomePageState extends State<LeafHomePage> {
 
     setState(() {});
   }
-
-  // ============================================================
-  // VERİLERİ KAYDET
-  // ============================================================
 
   Future<void> saveData() async {
     final prefs = await SharedPreferences.getInstance();
@@ -131,10 +124,6 @@ class _LeafHomePageState extends State<LeafHomePage> {
     );
   }
 
-  // ============================================================
-  // BUGÜNÜN TARİHİ
-  // ============================================================
-
   String todayKey() {
     final now = DateTime.now();
 
@@ -150,13 +139,15 @@ class _LeafHomePageState extends State<LeafHomePage> {
   // ============================================================
 
   Future<void> addReading() async {
-    // Eğer hiç kitap yoksa önce kitap eklememiz gerekiyor.
     if (books.isEmpty) {
       await showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text('Önce bir kitap ekleyelim 📚'),
+            backgroundColor: const Color(0xFFFFFCF5),
+            title: const Text(
+              'Önce bir kitap ekleyelim 📚',
+            ),
             content: const Text(
               'Okuma ekleyebilmek için önce Kitaplarım bölümünden bir kitap eklemelisin.',
             ),
@@ -176,7 +167,9 @@ class _LeafHomePageState extends State<LeafHomePage> {
     }
 
     String? selectedBook;
-    final pagesController = TextEditingController();
+
+    final pagesController =
+        TextEditingController();
 
     await showDialog(
       context: context,
@@ -184,7 +177,8 @@ class _LeafHomePageState extends State<LeafHomePage> {
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
-              backgroundColor: const Color(0xFFFFFCF5),
+              backgroundColor:
+                  const Color(0xFFFFFCF5),
 
               title: const Text(
                 'Okuma Ekle',
@@ -195,7 +189,8 @@ class _LeafHomePageState extends State<LeafHomePage> {
 
               content: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
                 children: [
                   const Text(
                     'Hangi kitabı okuyorsun?',
@@ -206,27 +201,26 @@ class _LeafHomePageState extends State<LeafHomePage> {
 
                   const SizedBox(height: 10),
 
-                  // ------------------------------------------------
-                  // KİTAP SEÇİMİ
-                  // ------------------------------------------------
-
                   DropdownButtonFormField<String>(
                     initialValue: selectedBook,
-                    decoration: const InputDecoration(
+                    decoration:
+                        const InputDecoration(
                       border: OutlineInputBorder(),
                       hintText: 'Kitap seç',
                     ),
-
-                    items: books.map((book) {
-                      return DropdownMenuItem<String>(
-                        value: book['name'].toString(),
-                        child: Text(
-                          book['name'].toString(),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      );
-                    }).toList(),
-
+                    items: books.map(
+                      (book) {
+                        return DropdownMenuItem<String>(
+                          value:
+                              book['name'].toString(),
+                          child: Text(
+                            book['name'].toString(),
+                            overflow:
+                                TextOverflow.ellipsis,
+                          ),
+                        );
+                      },
+                    ).toList(),
                     onChanged: (value) {
                       setDialogState(() {
                         selectedBook = value;
@@ -246,10 +240,14 @@ class _LeafHomePageState extends State<LeafHomePage> {
                   const SizedBox(height: 10),
 
                   TextField(
-                    controller: pagesController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
+                    controller:
+                        pagesController,
+                    keyboardType:
+                        TextInputType.number,
+                    decoration:
+                        const InputDecoration(
+                      border:
+                          OutlineInputBorder(),
                       hintText: 'Örneğin: 25',
                       suffixText: 'sayfa',
                     ),
@@ -268,7 +266,9 @@ class _LeafHomePageState extends State<LeafHomePage> {
                 FilledButton(
                   onPressed: () async {
                     final pages =
-                        int.tryParse(pagesController.text);
+                        int.tryParse(
+                      pagesController.text,
+                    );
 
                     if (selectedBook == null ||
                         pages == null ||
@@ -278,48 +278,44 @@ class _LeafHomePageState extends State<LeafHomePage> {
 
                     final date = todayKey();
 
-                    // ----------------------------------------------
-                    // GÜNLÜK TOPLAMA EKLE
-                    // ----------------------------------------------
-
                     readingHistory[date] =
-                        (readingHistory[date] ?? 0) + pages;
+                        (readingHistory[date] ?? 0) +
+                            pages;
 
-                    // ----------------------------------------------
-                    // KİTABA OKUNAN SAYFALARI EKLE
-                    // ----------------------------------------------
-
-                    final bookIndex = books.indexWhere(
+                    final bookIndex =
+                        books.indexWhere(
                       (book) =>
-                          book['name'].toString() ==
+                          book['name']
+                              .toString() ==
                           selectedBook,
                     );
 
                     if (bookIndex != -1) {
                       final currentReadPages =
-                          (books[bookIndex]['readPages'] ?? 0)
-                              as int;
+                          (books[bookIndex]
+                                  ['readPages'] ??
+                              0) as int;
 
                       final totalPages =
-                          (books[bookIndex]['totalPages'] ?? 0)
-                              as int;
+                          (books[bookIndex]
+                                  ['totalPages'] ??
+                              0) as int;
 
                       int newReadPages =
-                          currentReadPages + pages;
+                          currentReadPages +
+                              pages;
 
-                      // Toplam sayfayı aşmasın.
                       if (totalPages > 0 &&
-                          newReadPages > totalPages) {
-                        newReadPages = totalPages;
+                          newReadPages >
+                              totalPages) {
+                        newReadPages =
+                            totalPages;
                       }
 
-                      books[bookIndex]['readPages'] =
+                      books[bookIndex]
+                          ['readPages'] =
                           newReadPages;
                     }
-
-                    // ----------------------------------------------
-                    // AYRICA AYRI OKUMA KAYDI OLUŞTUR
-                    // ----------------------------------------------
 
                     readingRecords.add({
                       'date': date,
@@ -337,7 +333,6 @@ class _LeafHomePageState extends State<LeafHomePage> {
                       Navigator.pop(context);
                     }
                   },
-
                   child: const Text('Kaydet'),
                 ),
               ],
@@ -355,14 +350,18 @@ class _LeafHomePageState extends State<LeafHomePage> {
   // ============================================================
 
   Future<void> addBook() async {
-    final nameController = TextEditingController();
-    final pagesController = TextEditingController();
+    final nameController =
+        TextEditingController();
+
+    final pagesController =
+        TextEditingController();
 
     await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: const Color(0xFFFFFCF5),
+          backgroundColor:
+              const Color(0xFFFFFCF5),
 
           title: const Text(
             'Yeni Kitap',
@@ -375,23 +374,33 @@ class _LeafHomePageState extends State<LeafHomePage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: nameController,
-                decoration: const InputDecoration(
+                controller:
+                    nameController,
+                decoration:
+                    const InputDecoration(
                   labelText: 'Kitap adı',
-                  hintText: 'Örneğin: Muhteşem Gatsby',
-                  border: OutlineInputBorder(),
+                  hintText:
+                      'Örneğin: Suç ve Ceza',
+                  border:
+                      OutlineInputBorder(),
                 ),
               ),
 
               const SizedBox(height: 14),
 
               TextField(
-                controller: pagesController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Toplam sayfa',
-                  hintText: 'Örneğin: 208',
-                  border: OutlineInputBorder(),
+                controller:
+                    pagesController,
+                keyboardType:
+                    TextInputType.number,
+                decoration:
+                    const InputDecoration(
+                  labelText:
+                      'Toplam sayfa',
+                  hintText:
+                      'Örneğin: 687',
+                  border:
+                      OutlineInputBorder(),
                   suffixText: 'sayfa',
                 ),
               ),
@@ -408,10 +417,13 @@ class _LeafHomePageState extends State<LeafHomePage> {
 
             FilledButton(
               onPressed: () async {
-                final name = nameController.text.trim();
+                final name =
+                    nameController.text.trim();
 
                 final totalPages =
-                    int.tryParse(pagesController.text);
+                    int.tryParse(
+                  pagesController.text,
+                );
 
                 if (name.isEmpty ||
                     totalPages == null ||
@@ -419,8 +431,8 @@ class _LeafHomePageState extends State<LeafHomePage> {
                   return;
                 }
 
-                // Aynı kitap daha önce eklenmiş mi?
-                final alreadyExists = books.any(
+                final alreadyExists =
+                    books.any(
                   (book) =>
                       book['name']
                           .toString()
@@ -434,7 +446,8 @@ class _LeafHomePageState extends State<LeafHomePage> {
 
                 books.add({
                   'name': name,
-                  'totalPages': totalPages,
+                  'totalPages':
+                      totalPages,
                   'readPages': 0,
                 });
 
@@ -446,7 +459,8 @@ class _LeafHomePageState extends State<LeafHomePage> {
                   Navigator.pop(context);
                 }
               },
-              child: const Text('Kitabı Ekle'),
+              child:
+                  const Text('Kitabı Ekle'),
             ),
           ],
         );
@@ -458,7 +472,7 @@ class _LeafHomePageState extends State<LeafHomePage> {
   }
 
   // ============================================================
-  // MENÜDEN SAYFA DEĞİŞTİR
+  // MENÜ
   // ============================================================
 
   void changePage(int page) {
@@ -470,176 +484,304 @@ class _LeafHomePageState extends State<LeafHomePage> {
   }
 
   // ============================================================
+  // DEFTER SAYFASI
+  // ============================================================
+
+  Widget notebookPage({
+    required Widget child,
+    bool showLines = true,
+  }) {
+    return Container(
+      margin: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFFCF4),
+
+        borderRadius:
+            BorderRadius.circular(18),
+
+        boxShadow: const [
+          BoxShadow(
+            blurRadius: 12,
+            offset: Offset(2, 5),
+            color: Color(0x22000000),
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          if (showLines)
+            Positioned.fill(
+              child: IgnorePointer(
+                child: CustomPaint(
+                  painter:
+                      NotebookLinePainter(),
+                ),
+              ),
+            ),
+
+          // Sol taraftaki defter boşluğu
+          Positioned(
+            left: 52,
+            top: 0,
+            bottom: 0,
+            child: Container(
+              width: 1,
+              color:
+                  const Color(0xFFE1B7B7),
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 78,
+              right: 28,
+              top: 28,
+              bottom: 28,
+            ),
+            child: child,
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ============================================================
   // ANA SAYFA
   // ============================================================
 
   Widget buildHomePage() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(28),
-
-      child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
-
-        children: [
-          const Text(
-            'leaf',
-            style: TextStyle(
-              fontSize: 36,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-
-          const SizedBox(height: 8),
-
-          const Text(
-            'Bugün kaç sayfa okudun?',
-            style: TextStyle(
-              fontSize: 22,
-            ),
-          ),
-
-          const SizedBox(height: 30),
-
-          // ------------------------------------------------------
-          // BUGÜN KARTI
-          // ------------------------------------------------------
-
-          Container(
-            width: double.infinity,
-
-            padding: const EdgeInsets.all(30),
-
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFFCF5),
-
-              borderRadius:
-                  BorderRadius.circular(24),
-
-              border: Border.all(
-                color: const Color(0xFFE5E0D4),
-              ),
-            ),
-
-            child: Column(
+    return notebookPage(
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment:
+              CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                const Text(
-                  'Bugün',
-                  style: TextStyle(
-                    fontSize: 18,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'leaf',
+                        style: TextStyle(
+                          fontSize: 34,
+                          fontWeight:
+                              FontWeight.w600,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      SizedBox(height: 6),
+                      Text(
+                        'okuma defterim',
+                        style: TextStyle(
+                          fontSize: 15,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
 
-                const SizedBox(height: 12),
-
-                Text(
-                  '$todayPages',
-
-                  style: const TextStyle(
-                    fontSize: 52,
-                    fontWeight: FontWeight.bold,
+                IconButton(
+                  onPressed: addBook,
+                  icon: const Icon(
+                    Icons.add_circle_outline,
                   ),
-                ),
-
-                const Text(
-                  'sayfa',
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
-                ),
-
-                const SizedBox(height: 25),
-
-                SizedBox(
-                  width: double.infinity,
-
-                  child: FilledButton.icon(
-                    onPressed: addReading,
-
-                    icon: const Icon(
-                      Icons.add,
-                    ),
-
-                    label: const Text(
-                      'Okuma Ekle',
-                    ),
-                  ),
+                  tooltip:
+                      'Yeni kitap ekle',
                 ),
               ],
             ),
-          ),
 
-          const SizedBox(height: 35),
+            const SizedBox(height: 42),
 
-          // ------------------------------------------------------
-          // KİTAPLARIM
-          // ------------------------------------------------------
-
-          Row(
-            mainAxisAlignment:
-                MainAxisAlignment.spaceBetween,
-
-            children: [
-              const Text(
-                'Kitaplarım',
-
-                style: TextStyle(
-                  fontSize: 27,
-                  fontWeight: FontWeight.bold,
-                ),
+            const Text(
+              'Bugün kaç sayfa okudun?',
+              style: TextStyle(
+                fontSize: 23,
+                fontWeight: FontWeight.w500,
               ),
+            ),
 
-              IconButton(
-                onPressed: addBook,
+            const SizedBox(height: 18),
 
-                icon: const Icon(
-                  Icons.add,
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 15),
-
-          if (books.isEmpty)
+            // BUGÜN KARTI
             Container(
               width: double.infinity,
-
-              padding: const EdgeInsets.all(22),
-
+              padding:
+                  const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 26,
+              ),
               decoration: BoxDecoration(
-                color: const Color(0xFFE9EDDF),
+                color:
+                    const Color(0xFFF6F0E4),
                 borderRadius:
                     BorderRadius.circular(18),
+                border: Border.all(
+                  color:
+                      const Color(0xFFE4DCCB),
+                ),
               ),
-
-              child: const Row(
+              child: Row(
                 children: [
-                  Icon(
-                    Icons.menu_book_outlined,
+                  Container(
+                    width: 72,
+                    height: 72,
+                    decoration:
+                        BoxDecoration(
+                      color:
+                          const Color(0xFFE2E9D9),
+                      borderRadius:
+                          BorderRadius.circular(
+                        16,
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.menu_book_outlined,
+                      size: 32,
+                      color:
+                          Color(0xFF647656),
+                    ),
                   ),
 
-                  SizedBox(width: 12),
+                  const SizedBox(width: 18),
 
-                  Text(
-                    'Henüz kitap eklenmedi',
-                    style: TextStyle(
-                      fontSize: 16,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Bugün',
+                          style: TextStyle(
+                            fontSize: 15,
+                          ),
+                        ),
+
+                        const SizedBox(
+                          height: 2,
+                        ),
+
+                        Text(
+                          '$todayPages',
+                          style:
+                              const TextStyle(
+                            fontSize: 38,
+                            fontWeight:
+                                FontWeight.w600,
+                          ),
+                        ),
+
+                        const Text(
+                          'sayfa okudun',
+                          style: TextStyle(
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
 
-          ...books.asMap().entries.map(
-            (entry) {
-              return buildBookCard(
-                entry.value,
-                entry.key,
-              );
-            },
-          ),
-        ],
+            const SizedBox(height: 16),
+
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed:
+                    addReading,
+                style:
+                    FilledButton.styleFrom(
+                  backgroundColor:
+                      const Color(
+                    0xFF6C7F5B,
+                  ),
+                  foregroundColor:
+                      Colors.white,
+                  padding:
+                      const EdgeInsets.symmetric(
+                    vertical: 15,
+                  ),
+                ),
+                icon: const Icon(
+                  Icons.add,
+                ),
+                label: const Text(
+                  'Bugünkü Okumayı Ekle',
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 44),
+
+            Row(
+              mainAxisAlignment:
+                  MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Kitaplarım',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight:
+                        FontWeight.w600,
+                  ),
+                ),
+
+                TextButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      selectedPage = 2;
+                    });
+                  },
+                  icon: const Icon(
+                    Icons.arrow_forward,
+                    size: 17,
+                  ),
+                  label:
+                      const Text('Tümü'),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 14),
+
+            if (books.isEmpty)
+              Container(
+                width:
+                    double.infinity,
+                padding:
+                    const EdgeInsets.all(20),
+                decoration:
+                    BoxDecoration(
+                  color:
+                      const Color(0xFFE8EDDF),
+                  borderRadius:
+                      BorderRadius.circular(
+                    16,
+                  ),
+                ),
+                child: const Text(
+                  'Henüz bir kitap eklemedin.',
+                ),
+              ),
+
+            ...books.asMap().entries.map(
+              (entry) {
+                return buildBookCard(
+                  entry.value,
+                  entry.key,
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -652,53 +794,58 @@ class _LeafHomePageState extends State<LeafHomePage> {
     Map<String, dynamic> book,
     int index,
   ) {
-    final name = book['name'].toString();
+    final name =
+        book['name'].toString();
 
     final totalPages =
-        (book['totalPages'] ?? 0) as int;
+        (book['totalPages'] ?? 0)
+            as int;
 
     final readPages =
-        (book['readPages'] ?? 0) as int;
+        (book['readPages'] ?? 0)
+            as int;
 
     double progress = 0;
 
     if (totalPages > 0) {
-      progress = readPages / totalPages;
+      progress =
+          readPages / totalPages;
     }
 
     return Container(
+      width: double.infinity,
       margin:
-          const EdgeInsets.only(bottom: 14),
-
+          const EdgeInsets.only(bottom: 12),
       padding:
           const EdgeInsets.all(18),
-
       decoration: BoxDecoration(
-        color: const Color(0xFFE9EDDF),
-
+        color: const Color(0xFFF8F4E9),
         borderRadius:
-            BorderRadius.circular(18),
+            BorderRadius.circular(16),
+        border: Border.all(
+          color: const Color(0xFFE3DBCA),
+        ),
       ),
-
       child: Column(
         crossAxisAlignment:
             CrossAxisAlignment.start,
-
         children: [
           Row(
             children: [
               const Icon(
                 Icons.menu_book_outlined,
+                color:
+                    Color(0xFF647656),
               ),
 
-              const SizedBox(width: 12),
+              const SizedBox(width: 10),
 
               Expanded(
                 child: Text(
                   name,
-
-                  style: const TextStyle(
-                    fontSize: 18,
+                  style:
+                      const TextStyle(
+                    fontSize: 17,
                     fontWeight:
                         FontWeight.w600,
                   ),
@@ -713,18 +860,21 @@ class _LeafHomePageState extends State<LeafHomePage> {
 
                   setState(() {});
                 },
-
                 icon: const Icon(
                   Icons.delete_outline,
+                  size: 20,
                 ),
               ),
             ],
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
 
           Text(
             '$readPages / $totalPages sayfa',
+            style: const TextStyle(
+              fontSize: 14,
+            ),
           ),
 
           const SizedBox(height: 8),
@@ -732,11 +882,22 @@ class _LeafHomePageState extends State<LeafHomePage> {
           LinearProgressIndicator(
             value:
                 progress.clamp(0.0, 1.0),
-
-            minHeight: 7,
-
+            minHeight: 6,
             borderRadius:
                 BorderRadius.circular(10),
+            backgroundColor:
+                const Color(0xFFDDE2D4),
+            color:
+                const Color(0xFF7A8E69),
+          ),
+
+          const SizedBox(height: 6),
+
+          Text(
+            '${(progress * 100).round()}% tamamlandı',
+            style: const TextStyle(
+              fontSize: 12,
+            ),
           ),
         ],
       ),
@@ -744,23 +905,18 @@ class _LeafHomePageState extends State<LeafHomePage> {
   }
 
   // ============================================================
-  // OKUMA TAKVİMİ
+  // TAKVİM SAYFASI
   // ============================================================
 
   Widget buildCalendarPage() {
     final now = DateTime.now();
 
-    final firstDay = DateTime(
-      now.year,
-      now.month,
-      1,
-    );
+    final firstDay =
+        DateTime(now.year, now.month, 1);
 
-    final daysInMonth = DateTime(
-      now.year,
-      now.month + 1,
-      0,
-    ).day;
+    final daysInMonth =
+        DateTime(now.year, now.month + 1, 0)
+            .day;
 
     final startingWeekday =
         firstDay.weekday;
@@ -780,227 +936,179 @@ class _LeafHomePageState extends State<LeafHomePage> {
       'Aralık',
     ];
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(28),
-
-      child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
-
-        children: [
-          const Text(
-            'Okuma Takvimi',
-
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-
-          const SizedBox(height: 8),
-
-          const Text(
-            'Okuma alışkanlığını gün gün takip et.',
-            style: TextStyle(
-              fontSize: 18,
-            ),
-          ),
-
-          const SizedBox(height: 30),
-
-          Container(
-            width: double.infinity,
-
-            padding:
-                const EdgeInsets.all(25),
-
-            decoration: BoxDecoration(
-              color:
-                  const Color(0xFFFFFCF5),
-
-              borderRadius:
-                  BorderRadius.circular(24),
-
-              border: Border.all(
-                color:
-                    const Color(0xFFE5E0D4),
+    return notebookPage(
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment:
+              CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Okuma Takvimi',
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight:
+                    FontWeight.w600,
               ),
             ),
 
-            child: Column(
+            const SizedBox(height: 6),
+
+            Text(
+              'ne kadar çok gün, o kadar çok yaprak 🌱',
+              style: const TextStyle(
+                fontSize: 15,
+              ),
+            ),
+
+            const SizedBox(height: 34),
+
+            Center(
+              child: Text(
+                '${monthNames[now.month - 1]} ${now.year}',
+                style: const TextStyle(
+                  fontSize: 23,
+                  fontWeight:
+                      FontWeight.w600,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            const Row(
+              mainAxisAlignment:
+                  MainAxisAlignment
+                      .spaceAround,
               children: [
-                Text(
-                  '${monthNames[now.month - 1]} ${now.year}',
-
-                  style:
-                      const TextStyle(
-                    fontSize: 24,
-                    fontWeight:
-                        FontWeight.bold,
-                  ),
-                ),
-
-                const SizedBox(height: 25),
-
-                const Row(
-                  mainAxisAlignment:
-                      MainAxisAlignment
-                          .spaceAround,
-
-                  children: [
-                    Text('P'),
-                    Text('S'),
-                    Text('Ç'),
-                    Text('P'),
-                    Text('C'),
-                    Text('C'),
-                    Text('P'),
-                  ],
-                ),
-
-                const SizedBox(height: 12),
-
-                GridView.builder(
-                  shrinkWrap: true,
-
-                  physics:
-                      const NeverScrollableScrollPhysics(),
-
-                  gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 7,
-                    childAspectRatio: 1,
-                  ),
-
-                  itemCount:
-                      startingWeekday -
-                          1 +
-                          daysInMonth,
-
-                  itemBuilder:
-                      (context, index) {
-                    if (index <
-                        startingWeekday - 1) {
-                      return const SizedBox();
-                    }
-
-                    final day =
-                        index -
-                            (startingWeekday - 1) +
-                            1;
-
-                    final key =
-                        '${now.year}-${now.month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
-
-                    final pages =
-                        readingHistory[key] ?? 0;
-
-                    final isToday =
-                        day == now.day;
-
-                    return GestureDetector(
-                      onTap: () {
-                        showDayInfo(
-                          day,
-                          pages,
-                        );
-                      },
-
-                      child: Container(
-                        margin:
-                            const EdgeInsets.all(3),
-
-                        decoration:
-                            BoxDecoration(
-                          color: pages > 0
-                              ? const Color(
-                                  0xFFDDE8D0,
-                                )
-                              : isToday
-                                  ? const Color(
-                                      0xFFE9EDDF,
-                                    )
-                                  : Colors
-                                      .transparent,
-
-                          borderRadius:
-                              BorderRadius.circular(
-                            12,
-                          ),
-
-                          border: isToday
-                              ? Border.all(
-                                  color:
-                                      const Color(
-                                    0xFF667A55,
-                                  ),
-
-                                  width: 2,
-                                )
-                              : null,
-                        ),
-
-                        child: Column(
-                          mainAxisAlignment:
-                              MainAxisAlignment
-                                  .center,
-
-                          children: [
-                            Text(
-                              '$day',
-
-                              style:
-                                  const TextStyle(
-                                fontWeight:
-                                    FontWeight.w600,
-                              ),
-                            ),
-
-                            if (pages > 0)
-                              Text(
-                                '$pages',
-
-                                style:
-                                    const TextStyle(
-                                  fontSize: 11,
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                Text('P'),
+                Text('S'),
+                Text('Ç'),
+                Text('P'),
+                Text('C'),
+                Text('C'),
+                Text('P'),
               ],
             ),
-          ),
 
-          const SizedBox(height: 25),
+            const SizedBox(height: 12),
 
-          // ------------------------------------------------------
-          // TAKVİMİN ALTINDAKİ OKUMA KAYITLARI
-          // ------------------------------------------------------
+            GridView.builder(
+              shrinkWrap: true,
+              physics:
+                  const NeverScrollableScrollPhysics(),
+              gridDelegate:
+                  const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 7,
+                childAspectRatio: 1,
+              ),
+              itemCount:
+                  startingWeekday -
+                      1 +
+                      daysInMonth,
+              itemBuilder:
+                  (context, index) {
+                if (index <
+                    startingWeekday - 1) {
+                  return const SizedBox();
+                }
 
-          const Text(
-            'Bu ay okudukların',
+                final day =
+                    index -
+                        (startingWeekday - 1) +
+                        1;
 
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
+                final key =
+                    '${now.year}-${now.month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
+
+                final pages =
+                    readingHistory[key] ?? 0;
+
+                final isToday =
+                    day == now.day;
+
+                return GestureDetector(
+                  onTap: () {
+                    showDayInfo(
+                      day,
+                      pages,
+                    );
+                  },
+                  child: Container(
+                    margin:
+                        const EdgeInsets.all(3),
+                    decoration:
+                        BoxDecoration(
+                      color: pages > 0
+                          ? const Color(
+                              0xFFDCE7D2,
+                            )
+                          : isToday
+                              ? const Color(
+                                  0xFFE8EDDF,
+                                )
+                              : Colors
+                                  .transparent,
+                      borderRadius:
+                          BorderRadius.circular(
+                        12,
+                      ),
+                      border: isToday
+                          ? Border.all(
+                              color:
+                                  const Color(
+                                0xFF667A55,
+                              ),
+                              width: 2,
+                            )
+                          : null,
+                    ),
+                    child: Column(
+                      mainAxisAlignment:
+                          MainAxisAlignment
+                              .center,
+                      children: [
+                        Text(
+                          '$day',
+                          style:
+                              const TextStyle(
+                            fontWeight:
+                                FontWeight.w600,
+                          ),
+                        ),
+                        if (pages > 0)
+                          Text(
+                            '$pages',
+                            style:
+                                const TextStyle(
+                              fontSize: 10,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
-          ),
 
-          const SizedBox(height: 15),
+            const SizedBox(height: 25),
 
-          ...buildMonthlyRecords(now),
-        ],
+            const Text(
+              'Bu ay okudukların',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight:
+                    FontWeight.w600,
+              ),
+            ),
+
+            const SizedBox(height: 15),
+
+            ...buildMonthlyRecords(now),
+          ],
+        ),
       ),
     );
   }
-
-  // ============================================================
-  // AYLIK OKUMA KAYITLARI
-  // ============================================================
 
   List<Widget> buildMonthlyRecords(
     DateTime now,
@@ -1008,12 +1116,14 @@ class _LeafHomePageState extends State<LeafHomePage> {
     final monthPrefix =
         '${now.year}-${now.month.toString().padLeft(2, '0')}';
 
-    final records = readingRecords.where(
+    final records =
+        readingRecords.where(
       (record) {
-        final date =
-            record['date'].toString();
-
-        return date.startsWith(monthPrefix);
+        return record['date']
+            .toString()
+            .startsWith(
+              monthPrefix,
+            );
       },
     ).toList();
 
@@ -1021,11 +1131,15 @@ class _LeafHomePageState extends State<LeafHomePage> {
       return [
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(20),
+          padding:
+              const EdgeInsets.all(18),
           decoration: BoxDecoration(
-            color: const Color(0xFFE9EDDF),
+            color:
+                const Color(0xFFE8EDDF),
             borderRadius:
-                BorderRadius.circular(18),
+                BorderRadius.circular(
+              16,
+            ),
           ),
           child: const Text(
             'Bu ay henüz bir okuma kaydı yok.',
@@ -1038,58 +1152,60 @@ class _LeafHomePageState extends State<LeafHomePage> {
       (record) {
         return Container(
           width: double.infinity,
-
           margin:
-              const EdgeInsets.only(bottom: 10),
-
+              const EdgeInsets.only(
+            bottom: 10,
+          ),
           padding:
-              const EdgeInsets.all(18),
-
+              const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color:
-                const Color(0xFFE9EDDF),
-
+                const Color(0xFFF8F4E9),
             borderRadius:
-                BorderRadius.circular(18),
+                BorderRadius.circular(
+              16,
+            ),
+            border: Border.all(
+              color:
+                  const Color(0xFFE3DBCA),
+            ),
           ),
-
           child: Row(
             children: [
               const Icon(
                 Icons.menu_book_outlined,
+                size: 22,
               ),
-
-              const SizedBox(width: 14),
-
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment:
-                      CrossAxisAlignment.start,
-
+                      CrossAxisAlignment
+                          .start,
                   children: [
                     Text(
-                      record['book'].toString(),
-
+                      record['book']
+                          .toString(),
                       style:
                           const TextStyle(
-                        fontSize: 17,
                         fontWeight:
                             FontWeight.w600,
                       ),
                     ),
-
-                    const SizedBox(height: 4),
-
+                    const SizedBox(height: 3),
                     Text(
-                      record['date'].toString(),
+                      record['date']
+                          .toString(),
+                      style:
+                          const TextStyle(
+                        fontSize: 12,
+                      ),
                     ),
                   ],
                 ),
               ),
-
               Text(
                 '${record['pages']} sayfa',
-
                 style:
                     const TextStyle(
                   fontWeight:
@@ -1118,23 +1234,22 @@ class _LeafHomePageState extends State<LeafHomePage> {
 
     final dayRecords =
         readingRecords.where(
-      (record) =>
-          record['date'].toString() ==
-          date,
+      (record) {
+        return record['date']
+                .toString() ==
+            date;
+      },
     ).toList();
 
     showDialog(
       context: context,
-
       builder: (context) {
         return AlertDialog(
           backgroundColor:
               const Color(0xFFFFFCF5),
-
           title: Text(
             '$day ${monthName(now.month)}',
           ),
-
           content: dayRecords.isEmpty
               ? const Text(
                   'Bu gün için henüz bir okuma kaydı yok.',
@@ -1142,14 +1257,12 @@ class _LeafHomePageState extends State<LeafHomePage> {
               : Column(
                   mainAxisSize:
                       MainAxisSize.min,
-
                   crossAxisAlignment:
-                      CrossAxisAlignment.start,
-
+                      CrossAxisAlignment
+                          .start,
                   children: [
                     Text(
                       'Toplam: $pages sayfa',
-
                       style:
                           const TextStyle(
                         fontSize: 17,
@@ -1157,36 +1270,34 @@ class _LeafHomePageState extends State<LeafHomePage> {
                             FontWeight.w600,
                       ),
                     ),
-
-                    const SizedBox(height: 15),
-
+                    const SizedBox(
+                      height: 15,
+                    ),
                     ...dayRecords.map(
                       (record) {
                         return Padding(
                           padding:
-                              const EdgeInsets.only(
+                              const EdgeInsets
+                                  .only(
                             bottom: 10,
                           ),
-
                           child: Row(
                             children: [
                               const Icon(
                                 Icons
                                     .menu_book_outlined,
-                                size: 20,
+                                size: 19,
                               ),
-
                               const SizedBox(
                                 width: 8,
                               ),
-
                               Expanded(
                                 child: Text(
-                                  record['book']
+                                  record[
+                                          'book']
                                       .toString(),
                                 ),
                               ),
-
                               Text(
                                 '${record['pages']} sf.',
                               ),
@@ -1197,13 +1308,11 @@ class _LeafHomePageState extends State<LeafHomePage> {
                     ),
                   ],
                 ),
-
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-
               child:
                   const Text('Kapat'),
             ),
@@ -1233,84 +1342,80 @@ class _LeafHomePageState extends State<LeafHomePage> {
   }
 
   // ============================================================
-  // KİTAPLAR SAYFASI
+  // KİTAPLAR
   // ============================================================
 
   Widget buildBooksPage() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(28),
-
-      child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
-
-        children: [
-          const Text(
-            'Kitaplarım',
-
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-
-          const SizedBox(height: 8),
-
-          const Text(
-            'Okuduğun kitapları burada tut.',
-            style: TextStyle(
-              fontSize: 18,
-            ),
-          ),
-
-          const SizedBox(height: 25),
-
-          SizedBox(
-            width: double.infinity,
-
-            child: FilledButton.icon(
-              onPressed: addBook,
-
-              icon: const Icon(
-                Icons.add,
-              ),
-
-              label:
-                  const Text(
-                'Yeni Kitap Ekle',
+    return notebookPage(
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment:
+              CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Kitaplarım',
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight:
+                    FontWeight.w600,
               ),
             ),
-          ),
 
-          const SizedBox(height: 25),
+            const SizedBox(height: 8),
 
-          if (books.isEmpty)
-            const Center(
-              child: Padding(
-                padding:
-                    EdgeInsets.all(30),
+            const Text(
+              'Okuduğun kitapları burada tut.',
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
 
-                child: Text(
-                  'Henüz kitap eklemedin.',
+            const SizedBox(height: 25),
+
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed:
+                    addBook,
+                icon: const Icon(
+                  Icons.add,
+                ),
+                label:
+                    const Text(
+                  'Yeni Kitap Ekle',
                 ),
               ),
             ),
 
-          ...books.asMap().entries.map(
-            (entry) {
-              return buildBookCard(
-                entry.value,
-                entry.key,
-              );
-            },
-          ),
-        ],
+            const SizedBox(height: 22),
+
+            if (books.isEmpty)
+              const Center(
+                child: Padding(
+                  padding:
+                      EdgeInsets.all(30),
+                  child: Text(
+                    'Henüz kitap eklemedin.',
+                  ),
+                ),
+              ),
+
+            ...books.asMap().entries.map(
+              (entry) {
+                return buildBookCard(
+                  entry.value,
+                  entry.key,
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
 
   // ============================================================
-  // İSTATİSTİKLER
+  // İSTATİSTİK
   // ============================================================
 
   Widget buildStatisticsPage() {
@@ -1321,56 +1426,55 @@ class _LeafHomePageState extends State<LeafHomePage> {
       totalPages += pages;
     }
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(28),
-
-      child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
-
-        children: [
-          const Text(
-            'İstatistikler',
-
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.w600,
+    return notebookPage(
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment:
+              CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'İstatistikler',
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight:
+                    FontWeight.w600,
+              ),
             ),
-          ),
 
-          const SizedBox(height: 8),
+            const SizedBox(height: 8),
 
-          const Text(
-            'Okuma yolculuğuna küçük bir bakış.',
-            style: TextStyle(
-              fontSize: 18,
+            const Text(
+              'Okuma yolculuğuna küçük bir bakış.',
+              style: TextStyle(
+                fontSize: 16,
+              ),
             ),
-          ),
 
-          const SizedBox(height: 30),
+            const SizedBox(height: 28),
 
-          buildStatisticCard(
-            'Toplam okunan sayfa',
-            '$totalPages',
-            Icons.menu_book_outlined,
-          ),
+            buildStatisticCard(
+              'Toplam okunan sayfa',
+              '$totalPages',
+              Icons.menu_book_outlined,
+            ),
 
-          const SizedBox(height: 15),
+            const SizedBox(height: 12),
 
-          buildStatisticCard(
-            'Okunan gün',
-            '${readingHistory.length}',
-            Icons.calendar_month_outlined,
-          ),
+            buildStatisticCard(
+              'Okunan gün',
+              '${readingHistory.length}',
+              Icons.calendar_month_outlined,
+            ),
 
-          const SizedBox(height: 15),
+            const SizedBox(height: 12),
 
-          buildStatisticCard(
-            'Kitap sayısı',
-            '${books.length}',
-            Icons.library_books_outlined,
-          ),
-        ],
+            buildStatisticCard(
+              'Kitap sayısı',
+              '${books.length}',
+              Icons.library_books_outlined,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1382,44 +1486,37 @@ class _LeafHomePageState extends State<LeafHomePage> {
   ) {
     return Container(
       width: double.infinity,
-
       padding:
-          const EdgeInsets.all(22),
-
+          const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color:
-            const Color(0xFFE9EDDF),
-
+            const Color(0xFFE8EDDF),
         borderRadius:
-            BorderRadius.circular(20),
+            BorderRadius.circular(16),
       ),
-
       child: Row(
         children: [
           Icon(
             icon,
-            size: 30,
+            size: 28,
+            color:
+                const Color(0xFF667A55),
           ),
-
-          const SizedBox(width: 18),
-
+          const SizedBox(width: 16),
           Expanded(
             child: Text(
               title,
-
               style:
                   const TextStyle(
-                fontSize: 17,
+                fontSize: 16,
               ),
             ),
           ),
-
           Text(
             value,
-
             style:
                 const TextStyle(
-              fontSize: 27,
+              fontSize: 25,
               fontWeight:
                   FontWeight.bold,
             ),
@@ -1437,13 +1534,10 @@ class _LeafHomePageState extends State<LeafHomePage> {
     switch (selectedPage) {
       case 1:
         return buildCalendarPage();
-
       case 2:
         return buildBooksPage();
-
       case 3:
         return buildStatisticsPage();
-
       default:
         return buildHomePage();
     }
@@ -1456,12 +1550,13 @@ class _LeafHomePageState extends State<LeafHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:
+          const Color(0xFFECE7D9),
+
       appBar: AppBar(
         backgroundColor:
-            const Color(0xFFF7F4EC),
-
+            const Color(0xFFECE7D9),
         elevation: 0,
-
         title: const Text(
           'leaf',
           style: TextStyle(
@@ -1471,34 +1566,30 @@ class _LeafHomePageState extends State<LeafHomePage> {
         ),
       ),
 
-      // ----------------------------------------------------------
-      // YANDAN AÇILAN MENÜ
-      // ----------------------------------------------------------
-
       drawer: Drawer(
         backgroundColor:
             const Color(0xFFF7F4EC),
-
         child: SafeArea(
           child: Column(
             children: [
               Padding(
                 padding:
                     const EdgeInsets.all(25),
-
                 child: Row(
                   children: [
                     const Icon(
                       Icons.eco_outlined,
                       size: 30,
+                      color:
+                          Color(0xFF667A55),
                     ),
-
-                    const SizedBox(width: 10),
-
+                    const SizedBox(
+                      width: 10,
+                    ),
                     const Text(
                       'leaf',
-
-                      style: TextStyle(
+                      style:
+                          TextStyle(
                         fontSize: 28,
                         fontWeight:
                             FontWeight.w600,
@@ -1511,78 +1602,57 @@ class _LeafHomePageState extends State<LeafHomePage> {
               const Divider(),
 
               ListTile(
-                leading:
-                    const Icon(
+                leading: const Icon(
                   Icons.home_outlined,
                 ),
-
-                title:
-                    const Text(
+                title: const Text(
                   'Ana Sayfa',
                 ),
-
                 selected:
                     selectedPage == 0,
-
                 onTap: () {
                   changePage(0);
                 },
               ),
 
               ListTile(
-                leading:
-                    const Icon(
+                leading: const Icon(
                   Icons
                       .calendar_month_outlined,
                 ),
-
-                title:
-                    const Text(
+                title: const Text(
                   'Okuma Takvimi',
                 ),
-
                 selected:
                     selectedPage == 1,
-
                 onTap: () {
                   changePage(1);
                 },
               ),
 
               ListTile(
-                leading:
-                    const Icon(
-                  Icons
-                      .menu_book_outlined,
+                leading: const Icon(
+                  Icons.menu_book_outlined,
                 ),
-
-                title:
-                    const Text(
+                title: const Text(
                   'Kitaplarım',
                 ),
-
                 selected:
                     selectedPage == 2,
-
                 onTap: () {
                   changePage(2);
                 },
               ),
 
               ListTile(
-                leading:
-                    const Icon(
+                leading: const Icon(
                   Icons.bar_chart_outlined,
                 ),
-
-                title:
-                    const Text(
+                title: const Text(
                   'İstatistikler',
                 ),
-
                 selected:
                     selectedPage == 3,
-
                 onTap: () {
                   changePage(3);
                 },
@@ -1594,5 +1664,44 @@ class _LeafHomePageState extends State<LeafHomePage> {
 
       body: currentPage(),
     );
+  }
+}
+
+// ============================================================
+// DEFTER ÇİZGİLERİ
+// ============================================================
+
+class NotebookLinePainter
+    extends CustomPainter {
+  @override
+  void paint(
+    Canvas canvas,
+    Size size,
+  ) {
+    final paint = Paint()
+      ..color =
+          const Color(0xFFE8E1D5)
+      ..strokeWidth = 1;
+
+    const lineSpacing = 30.0;
+
+    for (
+      double y = 28;
+      y < size.height;
+      y += lineSpacing
+    ) {
+      canvas.drawLine(
+        Offset(0, y),
+        Offset(size.width, y),
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(
+    covariant CustomPainter oldDelegate,
+  ) {
+    return false;
   }
 }
