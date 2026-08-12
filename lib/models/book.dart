@@ -1,17 +1,17 @@
 class Book {
-  String title;
+  String name;
   int totalPages;
   int readPages;
 
   Book({
-    required this.title,
+    required this.name,
     required this.totalPages,
     this.readPages = 0,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      'title': title,
+      'name': name,
       'totalPages': totalPages,
       'readPages': readPages,
     };
@@ -19,9 +19,9 @@ class Book {
 
   factory Book.fromMap(Map<String, dynamic> map) {
     return Book(
-      title: map['title'],
-      totalPages: map['totalPages'],
-      readPages: map['readPages'],
+      name: map['name'] ?? '',
+      totalPages: map['totalPages'] ?? 0,
+      readPages: map['readPages'] ?? 0,
     );
   }
 }

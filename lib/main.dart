@@ -3,6 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'widgets/book_card.dart';
+import 'widgets/goal_card.dart';
+import 'screens/home_page.dart';
+import 'screens/books_page.dart';
+
 void main() {
   runApp(const LeafApp());
 }
@@ -980,7 +985,7 @@ class _LeafHomePageState extends State<LeafHomePage> {
               Row(
                 children: [
                   Expanded(
-                    child: buildGoalCard(
+                    child: GoalCard(
                       title: 'Kitap',
                       current:
                           completedPlannedBooks,
@@ -996,7 +1001,7 @@ class _LeafHomePageState extends State<LeafHomePage> {
                   ),
 
                   Expanded(
-                    child: buildGoalCard(
+                    child: GoalCard(
                       title: 'Sayfa',
                       current:
                           monthlyPages,
@@ -1231,89 +1236,6 @@ class _LeafHomePageState extends State<LeafHomePage> {
   }
 
   // ============================================================
-  // HEDEF KARTI
-  // ============================================================
-
-  Widget buildGoalCard({
-    required String title,
-    required int current,
-    required int target,
-    required IconData icon,
-  }) {
-    final progress =
-        target > 0
-            ? (current / target)
-                .clamp(0.0, 1.0)
-            : 0.0;
-
-    return Container(
-      padding:
-          const EdgeInsets.all(18),
-      decoration:
-          BoxDecoration(
-        color:
-            const Color(0xFFF8F4E9),
-        borderRadius:
-            BorderRadius.circular(18),
-        border: Border.all(
-          color:
-              const Color(0xFFE3DBCA),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
-        children: [
-          Icon(
-            icon,
-            color:
-                const Color(0xFF667A55),
-          ),
-
-          const SizedBox(
-            height: 10,
-          ),
-
-          Text(
-            title,
-            style:
-                const TextStyle(
-              fontSize: 15,
-            ),
-          ),
-
-          const SizedBox(
-            height: 5,
-          ),
-
-          Text(
-            '$current / $target',
-            style:
-                const TextStyle(
-              fontSize: 21,
-              fontWeight:
-                  FontWeight.w600,
-            ),
-          ),
-
-          const SizedBox(
-            height: 9,
-          ),
-
-          LinearProgressIndicator(
-            value: progress,
-            minHeight: 6,
-            borderRadius:
-                BorderRadius.circular(
-              10,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ============================================================
   // DEFTER SAYFASI
   // ============================================================
 
@@ -1383,438 +1305,7 @@ class _LeafHomePageState extends State<LeafHomePage> {
     );
   }
 
-  // ============================================================
-  // ANA SAYFA
-  // ============================================================
-
-  Widget buildHomePage() {
-    return notebookPage(
-      child:
-          SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Expanded(
-                  child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment
-                            .start,
-                    children: [
-                      Text(
-                        'leaf',
-                        style:
-                            TextStyle(
-                          fontSize: 34,
-                          fontWeight:
-                              FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(height: 6),
-                      Text(
-                        'okuma defterim',
-                        style:
-                            TextStyle(
-                          fontSize: 15,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                IconButton(
-                  onPressed:
-                      addBook,
-                  icon:
-                      const Icon(
-                    Icons
-                        .add_circle_outline,
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(
-              height: 42,
-            ),
-
-            const Text(
-              'Bugün kaç sayfa okudun?',
-              style: TextStyle(
-                fontSize: 23,
-                fontWeight:
-                    FontWeight.w500,
-              ),
-            ),
-
-            const SizedBox(
-              height: 18,
-            ),
-
-            Container(
-              width: double.infinity,
-              padding:
-                  const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 26,
-              ),
-              decoration:
-                  BoxDecoration(
-                color:
-                    const Color(
-                  0xFFF6F0E4,
-                ),
-                borderRadius:
-                    BorderRadius.circular(
-                  18,
-                ),
-                border: Border.all(
-                  color:
-                      const Color(
-                    0xFFE4DCCB,
-                  ),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 72,
-                    height: 72,
-                    decoration:
-                        BoxDecoration(
-                      color:
-                          const Color(
-                        0xFFE2E9D9,
-                      ),
-                      borderRadius:
-                          BorderRadius.circular(
-                        16,
-                      ),
-                    ),
-                    child:
-                        const Icon(
-                      Icons
-                          .menu_book_outlined,
-                      size: 32,
-                      color:
-                          Color(
-                        0xFF647656,
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(
-                    width: 18,
-                  ),
-
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment
-                              .start,
-                      children: [
-                        const Text(
-                          'Bugün',
-                          style:
-                              TextStyle(
-                            fontSize: 15,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 2,
-                        ),
-                        Text(
-                          '$todayPages',
-                          style:
-                              const TextStyle(
-                            fontSize: 38,
-                            fontWeight:
-                                FontWeight.w600,
-                          ),
-                        ),
-                        const Text(
-                          'sayfa okudun',
-                          style:
-                              TextStyle(
-                            fontSize: 15,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(
-              height: 16,
-            ),
-
-            SizedBox(
-              width: double.infinity,
-              child:
-                  FilledButton.icon(
-                onPressed:
-                    addReading,
-                style:
-                    FilledButton
-                        .styleFrom(
-                  backgroundColor:
-                      const Color(
-                    0xFF6C7F5B,
-                  ),
-                  foregroundColor:
-                      Colors.white,
-                  padding:
-                      const EdgeInsets
-                          .symmetric(
-                    vertical: 15,
-                  ),
-                ),
-                icon:
-                    const Icon(
-                  Icons.add,
-                ),
-                label:
-                    const Text(
-                  'Bugünkü Okumayı Ekle',
-                  style:
-                      TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ),
-
-            const SizedBox(
-              height: 44,
-            ),
-
-            Row(
-              mainAxisAlignment:
-                  MainAxisAlignment
-                      .spaceBetween,
-              children: [
-                const Text(
-                  'Kitaplarım',
-                  style:
-                      TextStyle(
-                    fontSize: 24,
-                    fontWeight:
-                        FontWeight.w600,
-                  ),
-                ),
-                TextButton.icon(
-                  onPressed: () {
-                    setState(() {
-                      selectedPage = 2;
-                    });
-                  },
-                  icon:
-                      const Icon(
-                    Icons.arrow_forward,
-                    size: 17,
-                  ),
-                  label:
-                      const Text(
-                    'Tümü',
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(
-              height: 14,
-            ),
-
-            if (books.isEmpty)
-              Container(
-                width:
-                    double.infinity,
-                padding:
-                    const EdgeInsets.all(
-                  20,
-                ),
-                decoration:
-                    BoxDecoration(
-                  color:
-                      const Color(
-                    0xFFE8EDDF,
-                  ),
-                  borderRadius:
-                      BorderRadius.circular(
-                    16,
-                  ),
-                ),
-                child:
-                    const Text(
-                  'Henüz bir kitap eklemedin.',
-                ),
-              ),
-
-            ...books
-                .asMap()
-                .entries
-                .map(
-              (entry) {
-                return buildBookCard(
-                  entry.value,
-                  entry.key,
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ============================================================
-  // KİTAP KARTI
-  // ============================================================
-
-  Widget buildBookCard(
-    Map<String, dynamic> book,
-    int index,
-  ) {
-    final name =
-        book['name'].toString();
-
-    final totalPages =
-        (book['totalPages'] ?? 0)
-            as int;
-
-    final readPages =
-        (book['readPages'] ?? 0)
-            as int;
-
-    double progress = 0;
-
-    if (totalPages > 0) {
-      progress =
-          readPages / totalPages;
-    }
-
-    return Container(
-      width: double.infinity,
-      margin:
-          const EdgeInsets.only(
-        bottom: 12,
-      ),
-      padding:
-          const EdgeInsets.all(
-        18,
-      ),
-      decoration:
-          BoxDecoration(
-        color:
-            const Color(0xFFF8F4E9),
-        borderRadius:
-            BorderRadius.circular(
-          16,
-        ),
-        border: Border.all(
-          color:
-              const Color(0xFFE3DBCA),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment
-                .start,
-        children: [
-          Row(
-            children: [
-              const Icon(
-                Icons
-                    .menu_book_outlined,
-                color:
-                    Color(0xFF647656),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              Expanded(
-                child: Text(
-                  name,
-                  style:
-                      const TextStyle(
-                    fontSize: 17,
-                    fontWeight:
-                        FontWeight.w600,
-                  ),
-                ),
-              ),
-              IconButton(
-                onPressed:
-                    () async {
-                  books.removeAt(
-                    index,
-                  );
-
-                  await saveData();
-
-                  setState(() {});
-                },
-                icon:
-                    const Icon(
-                  Icons
-                      .delete_outline,
-                  size: 20,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Text(
-            '$readPages / $totalPages sayfa',
-            style:
-                const TextStyle(
-              fontSize: 14,
-            ),
-          ),
-          const SizedBox(
-            height: 8,
-          ),
-          LinearProgressIndicator(
-            value:
-                progress.clamp(
-              0.0,
-              1.0,
-            ),
-            minHeight: 6,
-            borderRadius:
-                BorderRadius.circular(
-              10,
-            ),
-            backgroundColor:
-                const Color(
-              0xFFDDE2D4,
-            ),
-            color:
-                const Color(
-              0xFF7A8E69,
-            ),
-          ),
-          const SizedBox(
-            height: 6,
-          ),
-          Text(
-            '${(progress * 100).round()}% tamamlandı',
-            style:
-                const TextStyle(
-              fontSize: 12,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
+ 
   // ============================================================
   // TAKVİM
   // ============================================================
@@ -2347,94 +1838,6 @@ class _LeafHomePageState extends State<LeafHomePage> {
   // KİTAPLAR
   // ============================================================
 
-  Widget buildBooksPage() {
-    return notebookPage(
-      child:
-          SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment
-                  .start,
-          children: [
-            const Text(
-              'Kitaplarım',
-              style:
-                  TextStyle(
-                fontSize: 30,
-                fontWeight:
-                    FontWeight.w600,
-              ),
-            ),
-
-            const SizedBox(
-              height: 8,
-            ),
-
-            const Text(
-              'Okuduğun kitapları burada tut.',
-              style:
-                  TextStyle(
-                fontSize: 16,
-              ),
-            ),
-
-            const SizedBox(
-              height: 25,
-            ),
-
-            SizedBox(
-              width:
-                  double.infinity,
-              child:
-                  FilledButton.icon(
-                onPressed:
-                    addBook,
-                icon:
-                    const Icon(
-                  Icons.add,
-                ),
-                label:
-                    const Text(
-                  'Yeni Kitap Ekle',
-                ),
-              ),
-            ),
-
-            const SizedBox(
-              height: 22,
-            ),
-
-            if (books.isEmpty)
-              const Center(
-                child:
-                    Padding(
-                  padding:
-                      EdgeInsets.all(
-                    30,
-                  ),
-                  child:
-                      Text(
-                    'Henüz kitap eklemedin.',
-                  ),
-                ),
-              ),
-
-            ...books
-                .asMap()
-                .entries
-                .map(
-              (entry) {
-                return buildBookCard(
-                  entry.value,
-                  entry.key,
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   // ============================================================
   // İSTATİSTİK
@@ -2590,7 +1993,15 @@ class _LeafHomePageState extends State<LeafHomePage> {
         return buildCalendarPage();
 
       case 2:
-        return buildBooksPage();
+        return BooksPage(
+          books: books,
+          onAddBook: addBook,
+          onDeleteBook: (index) async {
+            books.removeAt(index);
+            await saveData();
+            setState(() {});
+          },
+        );
 
       case 3:
         return buildStatisticsPage();
@@ -2599,7 +2010,23 @@ class _LeafHomePageState extends State<LeafHomePage> {
         return buildMonthlyPlanPage();
 
       default:
-        return buildHomePage();
+          
+         return HomePage(
+          todayPages: todayPages,
+          books: books,
+          onAddBook: addBook,
+          onAddReading: addReading,
+           onOpenBooks: () {
+             setState(() {
+                selectedPage = 2;
+            });
+    },
+    onDeleteBook: (index) async {
+      books.removeAt(index);
+      await saveData();
+      setState(() {});
+    },
+  );
     }
   }
 
